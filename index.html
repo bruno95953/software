@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Sistema de Usinagem</title>
+
+  <!-- Fonte moderna e profissional -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Link para o CSS externo -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Tela com fundo gradiente e centro com mensagem e formulário -->
+  <div class="container">
+    
+    <!-- Frase destacada no centro da tela -->
+    <h1 class="frase-destaque">Bem-vindo à Usinagem do Futuro</h1>
+
+    <!-- Formulário de login -->
+    <div class="login-box">
+      <form id="loginForm">
+        <!-- Campo para o nome do usuário -->
+        <input type="text" id="usuario" placeholder="Usuário" required />
+
+        <!-- Campo para a senha -->
+        <input type="password" id="senha" placeholder="Senha" required />
+
+        <!-- Seleção de tipo de usuário -->
+        <select id="tipoUsuario">
+          <option value="operador">Operador</option>
+          <option value="gestor">Gestor</option>
+        </select>
+
+        <!-- Botão de login -->
+        <button type="submit">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Script JS para redirecionar após login -->
+  <script src="js/script.js"></script>
+
+</body>
+</html>

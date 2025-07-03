@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Operador</title>
+  <script>
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    alert("Você precisa estar logado para acessar.");
+    window.location.href = "../index.html"; // Volta para login
+  }
+</script>
+
+  <link rel="stylesheet" href="paineloperador.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Painel do Operador</h1>
+    <h2>Olá, <span id="nome-operador"></span> 👋</h2>
+
+    <div class="grid">
+      <div class="icon"><img src="assets/producao.png" alt="Producao" /></div>
+      <div class="icon"><img src="assets/eficiencia.png" alt="Eficiência" /></div>
+      <div class="icon"><img src="assets/sequencia.png" alt="Sequência" /></div>
+      <div class="icon"><img src="assets/ferramenta.png" alt="Ferramenta" /></div>
+      <div class="icon"><img src="assets/instrucao.png" alt="Instrução" /></div>
+      <div class="icon"><img src="assets/manutencao.png" alt="Manutenção" /></div>
+      <div class="spacer"></div>
+      <div class="icon"><img src="assets/comunicado.png" alt="Comunicado" /></div>
+      <div class="spacer"></div>
+    </div>
+  </div>
+<!-- Modal Produção -->
+<div id="modal-codigo" class="modal">
+  <div class="modal-conteudo">
+    <h2>Digite o Código da Peça</h2>
+    <input type="text" id="input-codigo" placeholder="Ex: 1234" />
+    <div class="botoes-modal">
+      <button id="btn-confirmar">Confirmar</button>
+      <button id="btn-fechar">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+
+  <script src="paineloperador.js"></script>
+</body>
+</html>

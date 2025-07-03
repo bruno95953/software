@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Visualizador PDF</title>
+  <link rel="stylesheet" href="producao.css" />
+  <!-- PDF.js para visualizar o PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relógio Moderno</title>
+  <link rel="stylesheet" href="producao.css" />
+</head>
+
+<body>
+  <!-- 🧾 Área do PDF -->
+  <div id="pdf-viewer">
+    <canvas id="canvas"></canvas>
+  </div>
+  <!-- 📊 Tabela de Medições -->
+  <div class="tabela-medicoes">
+    <h3>Medições</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Cota</th>
+          <th>Tolerância</th>
+          <th>Valor</th>
+          <th>Próx. Med</th>
+          <th>Últ. Med</th>
+          <th>Freq. Med</th>
+          <th>Ferramenta</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>94 - 94.4</td>
+          <td class="verde">94.1</td>
+          <td>50</td>
+          <td>40</td>
+          <td>10</td>
+          <td>T01</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>58 - 58.4</td>
+          <td class="verde">58.3</td>
+          <td>60</td>
+          <td>40</td>
+          <td>20</td>
+          <td>T01</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>74 - 74.4</td>
+          <td class="vermelho">74.5</td>
+          <td>50</td>
+          <td>40</td>
+          <td>10</td>
+          <td>T02</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 🟦 Faixa branca de divisão -->
+  <div class="divisoria"></div>
+
+  <!-- ▶️ Botões de controle da produção -->
+  <div class="area-botoes-producao">
+    <button id="btn-iniciar" class="botao verde">▶ INICIAR PRODUÇÃO</button>
+    <button id="btn-fechar" class="botao vermelho" disabled>⛔ FECHAR PRODUÇÃO</button>
+  </div>
+
+  <!-- 🔘 Barra inferior com ícones -->
+  <div class="barra-icones">
+    <img src="assets/produzir.png" alt="Produzir" class="icone" />
+    <img src="assets/eficiencia.png" alt="Eficiência" class="icone" />
+    <img src="assets/sequencia.png" alt="Sequência" class="icone" />
+    <img src="assets/ferramenta.png" alt="Ferramenta" class="icone" />
+    <img src="assets/instrucao.png" alt="Instrução" class="icone" />
+    <img src="assets/manutencao.png" alt="Manutenção" class="icone" />
+    <img src="assets/comunicado.png" alt="Comunicado" class="icone" />
+  </div>
+
+  <div class="bloco-indicador">
+    <!-- Indicador de Eficiência -->
+    <div class="eficiencia-container" id="indicador-container">
+      <svg id="medidor-circular" viewBox="0 0 100 100">
+        <g class="circulo">
+          <circle class="fundo" cx="50" cy="50" r="45" />
+          <circle class="barra" cx="50" cy="50" r="45" />
+        </g>
+        <text id="texto-valor" x="50" y="47" text-anchor="middle">90%</text>
+        <text id="texto-label" x="50" y="60" text-anchor="middle">EFICIÊNCIA</text>
+      </svg>
+    </div>
+
+    <!-- 🎚️ Controle deslizante apenas para testes -->
+    <div class="controle">
+      <input type="range" id="slider" min="0" max="999" value="90" />
+      <label for="slider">Eficiência</label>
+    </div>
+    <!-- Cartão visual da produção atual -->
+    <div class="cartao-producao">
+
+      <div class="info-bloco">
+        <i data-lucide="clock"></i>
+        <span >Codigo Peça:</span>
+        <strong id="codigo-peca" >4397 - Engrenagem Redutor 2</strong>
+      </div>
+
+      <div class="info-bloco">
+        <i data-lucide="clock"></i>
+        <span ont-weight: bold;>Tempo de Usinagem:</span>
+        <strong id="tempo-usinagem" >15 segundos</strong>
+      </div>
+
+      <div class="info-bloco">
+        <i data-lucide="target"></i>
+        <span ont-weight: bold;>Meta:</span>
+        <strong >100% = 240 peças / 90% = 216 peças</strong>
+      </div>
+
+      <div class="info-bloco">
+        <i data-lucide="check-circle"></i>
+        <span ont-weight: bold;>Produzido:</span>
+        <strong id="quantidade-produzida" >35 unidades</strong>
+      </div>
+
+      <div class="info-bloco">
+        <i data-lucide="clock-8"></i>
+        <span ont-weight: bold;>Início:</span>
+        <strong id="hora-inicio" >20:31:15</strong>
+      </div>
+
+      <div class="info-bloco">
+        <i data-lucide="clock-8"></i>
+        <span ont-weight: bold;>Etapa:</span>
+        <strong id="etapa" >1º</strong>
+      </div>
+    </div>
+    <!-- Campo de Observação -->
+    <div class="campo-observacao-fixado">
+      <textarea id="observacao" placeholder="Registrar observação . . ."></textarea>
+    </div>
+
+   <div class="relogio-container">
+  <div class="bloco-hora">
+    <strong>HORA:</strong> <span id="hora">12:34:56</span>
+  </div>
+  <div class="divisoria"></div>
+  <div class="bloco-data">
+    <strong>DATA:</strong> <span id="data">01/07/2025</span>
+  </div>
+  </div>
+
+
+    <!-- 📜 JS principal -->
+    <script src="producao.js"></script>
+</body>
+
+</html>

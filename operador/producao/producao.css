@@ -1,0 +1,476 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #002f55 !important;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+#pdf-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 60vw;
+  /* 60% da largura da tela */
+  height: 75vh;
+  /* 75% da altura da tela */
+  overflow: hidden;
+  background: #004aad;
+  /* fundo azul para toda a tela */
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Barra de ícones alinhada e com a mesma largura do pdf-viewer */
+.barra-icones {
+  position: fixed;
+  top: 82vh;
+  bottom: 7vh;
+  /* termina em 78% da altura da tela */
+  left: 0;
+  width: 60vw;
+  /* Mesma largura do pdf */
+  height: 60px;
+  /* Altura fixa da barra */
+  background-color: rgba(0, 0, 0, 0);
+  /* totalmente transparente */
+  display: flex;
+  justify-content: space-between;
+  /* Espaçamento igual entre ícones */
+  align-items: center;
+  padding: 0 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+/* Estilo dos ícones */
+.barra-icones .icone {
+  width: 90px;
+  height: 90px;
+  border-radius: 15%;
+  /* Deixa circular */
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin: 0;
+  /* Remove margens extras */
+}
+
+/* Efeito hover suave */
+.barra-icones .icone:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(33, 150, 243, 0.6);
+}
+
+.tabela-medicoes {
+  position: fixed;
+  top: 10px;
+  /* Mais próximo do topo */
+  right: 10px;
+  /* Mais próximo da lateral */
+  width: 34vw;
+  /* Reduzi um pouco para não invadir o PDF */
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  z-index: 30;
+}
+
+.tabela-medicoes h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #004aad;
+  text-align: center;
+}
+
+.tabela-medicoes table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.tabela-medicoes th,
+.tabela-medicoes td {
+  border: 1px solid #ccc;
+  padding: 6px 4px;
+  text-align: center;
+}
+
+.tabela-medicoes th {
+  background-color: #004aad;
+  color: #fff;
+  font-weight: bold;
+}
+
+.tabela-medicoes tr:nth-child(even) {
+  background-color: #eaf1ff;
+}
+
+.verde {
+  color: green;
+  font-weight: bold;
+}
+
+.vermelho {
+  color: red;
+  font-weight: bold;
+}
+
+/* Faixa branca na metade da tela, grudada na direita, largura 40% */
+.divisoria {
+  position: fixed;
+  top: 50vh;
+  /* meio da tela vertical */
+  right: 0;
+  /* grudado no canto direito */
+  width: 40vw;
+  /* espaço livre do layout */
+  height: 4px;
+  background-color: #fff;
+  border-radius: 2px;
+  z-index: 25;
+  transform: translateY(-50%);
+}
+
+/* Área dos botões abaixo da faixa */
+.area-botoes-producao {
+  position: fixed;
+  top: calc(50vh + 1px);
+  /* 12px abaixo da faixa */
+  right: 0;
+  width: 40vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 30;
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+/* Botões padrão com design igual ao anterior, só menores */
+.botao {
+  font-size: 15px;
+  /* mantém fonte maior para boa leitura */
+  font-weight: bold;
+  padding: 7px 15px;
+  /* um pouco menor que antes, confortável para toque */
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  min-width: 180px;
+  /* menor que 220px, mas ainda amplo */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+/* Cores distintas e efeitos hover */
+.botao.verde {
+  background-color: #28a745;
+}
+
+.botao.verde:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.botao.vermelho {
+  background-color: #dc3545;
+}
+
+.botao.vermelho:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+/* Desabilitado */
+.botao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+body {
+  background: #004aad;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* 🧠 Indicador circular de eficiência */
+.eficiencia-container {
+  position: fixed;
+  /* 🔒 Fixa na tela independentemente do scroll */
+  top: 65vh;
+  /* Começa a 75% da altura da tela */
+  left: 61vw;
+  /* Começa a 65% da largura da tela */
+  width: 8vw;
+  /* Vai até 95% da tela (65 + 30) */
+  height: 8vh;
+  /* Vai até 90% da altura da tela */
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+
+
+/* 🔵 Fundo do círculo */
+.fundo {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 10;
+}
+
+/* 🟢 Barra de progresso (anima) */
+.barra {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke: #28a745;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke 0.4s, stroke-dashoffset 0.4s;
+}
+
+/* 📍 Texto de eficiência central moderno */
+#texto-valor {
+  font-size: 22px;
+  fill: #ffffff;
+  font-weight: 700;
+  /* Mais negrito */
+  letter-spacing: 1.5px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+  dominant-baseline: middle;
+}
+
+/* Espaçamento e destaque no label */
+#texto-label {
+  font-size: 9px;
+  fill: #ffffff;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  opacity: 0.9;
+  transform: translateY(10px);
+  /* Afastamento vertical */
+}
+
+/* 🎚️ Controle deslizante (para testes) */
+.controle {
+  position: absolute;
+  top: 540px;
+  left: 30%;
+  transform: translateX(-50%);
+  text-align: center;
+  font-size: 14px;
+}
+
+#slider {
+  width: 150px;
+  margin-top: 8px;
+}
+
+/* 🪟 Modal moderno para digitar produção */
+.overlay-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+}
+
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.modal input {
+  padding: 10px;
+  width: 100%;
+  font-size: 16px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.botoes-modal {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.botoes-modal button {
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#confirmar {
+  background-color: #28a745;
+  color: white;
+}
+
+#cancelar {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* ----------- Cartão de Produção ----------- */
+
+.cartao-producao {
+  position: fixed;
+  left: 70vw;
+  /* começa em 70% da largura da tela */
+  right: 1vw;
+  /* termina em 95% da largura da tela */
+  top: 60vh;
+  /* começa em 60% da altura da tela */
+  bottom: 21vh;
+  /* termina em 78% da altura da tela */
+
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 3px 7px;
+  font-family: 'Segoe UI', sans-serif;
+  z-index: 10;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Cabeçalho */
+.cabecalho-cartao {
+  display: flex;
+  align-items: center;
+  font-size: 8px;
+  font-weight: bold;
+  margin-bottom: 14px;
+  color: #05005c;
+}
+
+/* Blocos de informação */
+.info-bloco {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1px;
+  padding-bottom: 1px;
+  border-bottom: 2px solid #4a90e2;
+}
+
+.info-bloco:last-child {
+  border-bottom: none;
+}
+
+
+.info-bloco span {
+  flex: 1;
+  font-size: 0.6em;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-weight: 650;
+  /* mais moderno que 'bold' puro */
+  color: #000000;
+  letter-spacing: 0.3px;
+  /* espaçamento sutil */
+}
+
+.info-bloco strong {
+  font-size: 0.6em;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #000000;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+
+}
+
+/* Campo de Observação com posição fixa em porcentagem */
+/* Estilo do textarea */
+.campo-observacao-fixado textarea {
+  position: fixed;
+  /* 🔒 Fixa na tela independentemente do scroll */
+  top: 80vh;
+  /* Começa a 75% da altura da tela */
+  left: 61.3vw;
+  /* Começa a 65% da largura da tela */
+  width: 37.7vw;
+  /* Vai até 95% da tela (65 + 30) */
+  height: 12vh;
+  /* Vai até 99% da altura da tela */
+  border: 2px solid #4a90e2;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 14px;
+  resize: none;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap');
+
+.relogio-container {
+  position: fixed;
+  top: 93vh;
+  left: 67.5vw;
+  width: 25vw;
+  /* Vai até 95% da tela (65 + 30) */
+  background: rgba(0, 9, 46, 0.74);
+  color: #ffffff;
+  padding: 3px 10px;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  font-family: 'Roboto Mono', monospace;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 999;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.bloco-hora,
+.bloco-data {
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.divisoria {
+  width: 1px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 15px;
+}
